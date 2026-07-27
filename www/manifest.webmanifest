@@ -1,0 +1,17 @@
+{
+  "name": "AfricaGo Launch Control Cloud",
+  "short_name": "AfricaGo",
+  "description": "A shared, cloud-backed and offline-capable task and milestone workspace for the AfricaGo founding team.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f3f5f1",
+  "theme_color": "#102f29",
+  "icons": [
+    {
+      "src": "app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

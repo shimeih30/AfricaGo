@@ -1,6 +1,17 @@
 {
   "dependencies": {
+    "@capacitor/android": "^8.4.2",
+    "@capacitor/cli": "^8.4.2",
+    "@capacitor/core": "^8.4.2",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.110.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.0",
+    "@tauri-apps/cli": "^2.11.4",
+    "@types/node": "^26.1.1"
+  },
+  "scripts": {
+    "tauri": "tauri"
   }
 }

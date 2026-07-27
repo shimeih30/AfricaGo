@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#102f29" />
+  <meta name="description" content="AfricaGo Launch Control Cloud — a shared, offline-capable task and milestone workspace for the founding team" />
+  <title>AfricaGo Launch Control Cloud</title>
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('africagoTrackerTheme');
+        const dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      } catch {}
+    })();
+  </script>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="app.css" />
+</head>
+<body>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true">AG</div>
+        <div class="brand-copy">
+          <p class="eyebrow">AFRICAGO</p>
+          <h1>Launch Control</h1>
+          <span id="workspaceNameSidebar">Shared founder workspace</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Tracker sections">
+        <button class="nav-item active" data-view="tasks">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+          <span>Tasks</span>
+        </button>
+        <button class="nav-item" data-view="milestones">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V9"/><path d="M12 19V5"/><path d="M20 19v-7"/><path d="M2 19h20"/></svg></span>
+          <span>Milestones</span>
+        </button>
+        <button class="nav-item" data-view="settings">
+          <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.12.37.33.71.6 1 .28.29.67.43 1.1.4H21v4h-.09a1.7 1.7 0 0 0-1.51.6Z"/></svg></span>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <div class="project-pulse">
+          <span class="pulse-dot" aria-hidden="true"></span>
+          <div>
+            <p class="mini-label">PROJECT START</p>
+            <button id="sidebarStartDate" class="date-button" type="button">Not set</button>
+          </div>
+        </div>
+        <p id="syncNote" class="sync-note">Connecting to the shared workspace…</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button id="menuButton" class="icon-button mobile-only" aria-label="Open menu" aria-expanded="false">☰</button>
+        <div>
+          <p class="eyebrow" id="pageEyebrow">AFRICAGO LAUNCH</p>
+          <h2 id="pageTitle">Tasks</h2>
+        </div>
+        <div class="topbar-actions">
+          <button id="cloudStatusChip" class="cloud-status-chip" type="button" title="Open cloud settings"><span class="cloud-status-dot"></span><span id="cloudStatusText">Connecting</span></button>
+          <button id="accountButton" class="avatar-button" type="button" aria-label="Open account settings" title="Account">AG</button>
+          <button id="themeButton" class="icon-button theme-button" type="button" aria-label="Switch appearance" title="Switch appearance">
+            <svg class="theme-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+            <svg class="theme-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          </button>
+          <button id="notifyButton" class="button secondary notification-button" type="button"><span class="button-icon" aria-hidden="true">◌</span><span>Enable reminders</span></button>
+          <button id="addTaskButton" class="button primary" type="button"><span aria-hidden="true">＋</span> Add task</button>
+        </div>
+      </header>
+
+      <section id="tasksView" class="view active" aria-labelledby="pageTitle">
+        <div id="alertStrip" class="alert-strip hidden" role="status"></div>
+
+        <section class="summary-grid" aria-label="Project summary">
+          <article class="summary-card total-card">
+            <div class="summary-icon" aria-hidden="true">◎</div>
+            <div><p>Total tasks</p><strong id="totalCount">0</strong><span id="openCount">0 open</span></div>
+          </article>
+          <article class="summary-card warning">
+            <div class="summary-icon" aria-hidden="true">◷</div>
+            <div><p>Due soon</p><strong id="dueSoonCount">0</strong><span>Next 3 days</span></div>
+          </article>
+          <article class="summary-card danger">
+            <div class="summary-icon" aria-hidden="true">!</div>
+            <div><p>Overdue</p><strong id="overdueCount">0</strong><span>Needs attention</span></div>
+          </article>
+          <article class="summary-card success">
+            <div class="summary-icon" aria-hidden="true">✓</div>
+            <div><p>Completed</p><strong id="completedCount">0</strong><span id="completionPercent">0%</span></div>
+          </article>
+        </section>
+
+        <section class="progress-panel">
+          <div class="progress-heading">
+            <div>
+              <p class="mini-label">OVERALL PROGRESS</p>
+              <strong id="progressLabel">0 of 0 tasks complete</strong>
+            </div>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div id="progressBar" class="progress-bar"></div>
+          </div>
+        </section>
+
+        <section class="toolbar" aria-label="Task filters">
+          <label class="search-box">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="Search tasks, notes or categories" />
+          </label>
+          <select id="statusFilter" aria-label="Filter by status">
+            <option value="all">All statuses</option>
+            <option value="Not started">Not started</option>
+            <option value="In progress">In progress</option>
+            <option value="Blocked">Blocked</option>
+            <option value="Done">Done</option>
+          </select>
+          <select id="assigneeFilter" aria-label="Filter by responsible person"></select>
+          <select id="dateFilter" aria-label="Filter by due date">
+            <option value="all">All dates</option>
+            <option value="overdue">Overdue</option>
+            <option value="today">Due today</option>
+            <option value="soon">Due in 3 days</option>
+            <option value="week">Due in 7 days</option>
+            <option value="nodate">No due date</option>
+          </select>
+          <select id="sortSelect" aria-label="Sort tasks">
+            <option value="dueAsc">Due date: earliest</option>
+            <option value="dueDesc">Due date: latest</option>
+            <option value="priority">Priority</option>
+            <option value="created">Recently added</option>
+          </select>
+        </section>
+
+        <section class="task-section">
+          <div class="section-heading">
+            <div>
+              <p class="mini-label">ACTION REGISTER</p>
+              <h3 id="taskListHeading">All tasks</h3>
+            </div>
+            <span id="taskResultCount" class="result-count">0 tasks</span>
+          </div>
+          <div id="taskList" class="task-list"></div>
+          <div id="emptyState" class="empty-state hidden">
+            <div class="empty-icon">✓</div>
+            <h3>No matching tasks</h3>
+            <p>Adjust the filters or add a new task.</p>
+          </div>
+        </section>
+      </section>
+
+      <section id="milestonesView" class="view" aria-labelledby="pageTitle">
+        <div class="milestone-intro">
+          <div>
+            <p class="eyebrow">30-DAY EXECUTION PATH</p>
+            <h3>Milestones</h3>
+            <p>Milestones roll up the tasks from the AfricaGo startup schedule.</p>
+          </div>
+          <button id="calendarExportButton" class="button secondary" type="button">Export calendar (.ics)</button>
+        </div>
+        <div id="milestoneTimeline" class="milestone-timeline"></div>
+      </section>
+
+      <section id="settingsView" class="view" aria-labelledby="pageTitle">
+        <div class="settings-hero">
+          <div><p class="eyebrow">WORKSPACE CONTROL</p><h3>Make the tracker yours</h3><p>Schedule, team, cloud sync, reminders, appearance and backups—kept simple.</p></div>
+        </div>
+        <div class="settings-grid">
+          <section class="settings-card">
+            <p class="mini-label">PROJECT</p>
+            <h3>Schedule settings</h3>
+            <label>
+              Project start date
+              <input id="settingsStartDate" type="date" />
+            </label>
+            <p class="field-help">Changing this date can shift all milestone tasks by the same number of days.</p>
+            <button id="shiftDatesButton" class="button secondary" type="button">Save and shift milestone dates</button>
+          </section>
+
+          <section class="settings-card">
+            <p class="mini-label">FOUNDING TEAM</p>
+            <h3>Responsible people</h3>
+            <div id="peopleList" class="people-list"></div>
+            <div class="inline-form">
+              <input id="newPersonInput" type="text" placeholder="Add another person" />
+              <button id="addPersonButton" class="button secondary" type="button">Add</button>
+            </div>
+          </section>
+
+          <section class="settings-card">
+            <p class="mini-label">REMINDERS</p>
+            <h3>Date notifications</h3>
+            <p id="notificationStatus">Browser reminders are not enabled.</p>
+            <button id="settingsNotifyButton" class="button secondary" type="button">Enable browser reminders</button>
+            <p class="field-help">The app flags dates immediately. Browser reminders work while open; optional cloud email reminders are included in the setup package.</p>
+          </section>
+
+          <section class="settings-card appearance-card">
+            <p class="mini-label">APPEARANCE</p>
+            <h3>Theme</h3>
+            <p class="field-help">Use the sun / moon button in the header. Your choice is remembered on this device.</p>
+            <div class="theme-preview" aria-hidden="true"><span></span><span></span><span></span></div>
+          </section>
+
+          <section class="settings-card cloud-workspace-card">
+            <p class="mini-label">SHARED WORKSPACE</p>
+            <h3 id="workspaceNameSetting">AfricaGo</h3>
+            <p id="syncStatusDetailed" class="field-help">Checking cloud connection…</p>
+            <div class="join-code-row">
+              <div><span>Founder join code</span><strong id="workspaceJoinCode">—</strong></div>
+              <button id="copyJoinCodeButton" class="button secondary" type="button">Copy</button>
+            </div>
+            <div id="memberList" class="member-list"></div>
+            <button id="syncNowButton" class="button secondary" type="button">Sync now</button>
+          </section>
+
+          <section class="settings-card">
+            <p class="mini-label">ACCOUNT</p>
+            <h3 id="accountName">Local mode</h3>
+            <p id="accountEmail" class="field-help">Not signed in</p>
+            <div class="button-stack">
+              <button id="accountConnectButton" class="button secondary" type="button">Connect to cloud</button>
+              <button id="signOutButton" class="button danger-outline hidden" type="button">Sign out</button>
+            </div>
+          </section>
+
+          <section class="settings-card activity-card">
+            <p class="mini-label">RECENT ACTIVITY</p>
+            <h3>Who changed what</h3>
+            <div id="activityList" class="activity-list"><p class="field-help">Activity appears after cloud connection.</p></div>
+          </section>
+
+          <section class="settings-card">
+            <p class="mini-label">DATA</p>
+            <h3>Backup and transfer</h3>
+            <p class="field-help">Cloud sync is automatic. Exports remain available for independent archives.</p>
+            <div class="button-stack">
+              <button id="exportButton" class="button secondary" type="button">Export backup (.json)</button>
+              <button id="csvExportButton" class="button secondary" type="button">Export task list (.csv)</button>
+              <label class="button secondary file-button">
+                Import backup
+                <input id="importInput" type="file" accept="application/json,.json" hidden />
+              </label>
+              <button id="resetButton" class="button danger-outline" type="button">Reset tracker</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+  <nav class="mobile-bottom-nav" aria-label="Mobile tracker navigation">
+    <button class="nav-item mobile-nav-item active" data-view="tasks" type="button"><span aria-hidden="true">✓</span><span>Tasks</span></button>
+    <button class="nav-item mobile-nav-item" data-view="milestones" type="button"><span aria-hidden="true">◆</span><span>Plan</span></button>
+    <button class="nav-item mobile-nav-item" data-view="settings" type="button"><span aria-hidden="true">⚙</span><span>Settings</span></button>
+  </nav>
+  <button id="mobileAddButton" class="mobile-fab" type="button" aria-label="Add task">＋</button>
+
+  <dialog id="taskDialog" class="modal">
+    <form id="taskForm" method="dialog">
+      <div class="modal-head">
+        <div>
+          <p class="eyebrow">AFRICAGO TASK</p>
+          <h3 id="taskDialogTitle">Add task</h3>
+        </div>
+        <button id="closeTaskDialog" class="icon-button" type="button" aria-label="Close">×</button>
+      </div>
+      <input id="taskId" type="hidden" />
+      <div class="form-grid">
+        <label class="full-width">
+          Task title
+          <input id="taskTitle" type="text" required maxlength="140" placeholder="What needs to be done?" />
+        </label>
+        <label>
+          Status
+          <select id="taskStatus" required>
+            <option>Not started</option>
+            <option>In progress</option>
+            <option>Blocked</option>
+            <option>Done</option>
+          </select>
+        </label>
+        <label>
+          Responsible person
+          <select id="taskAssignee"></select>
+        </label>
+        <label>
+          Due date
+          <input id="taskDueDate" type="date" />
+        </label>
+        <label>
+          Priority
+          <select id="taskPriority">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </label>
+        <label>
+          Category
+          <input id="taskCategory" type="text" maxlength="60" placeholder="e.g. Licensing" />
+        </label>
+        <label>
+          Milestone
+          <select id="taskMilestone">
+            <option value="Foundation">Foundation</option>
+            <option value="Licensing">Licensing</option>
+            <option value="Research">Research</option>
+            <option value="Incorporation">Incorporation</option>
+            <option value="Partnerships">Partnerships</option>
+            <option value="MVP">MVP</option>
+            <option value="Pilot">Pilot</option>
+            <option value="Ongoing">Ongoing</option>
+          </select>
+        </label>
+        <label class="full-width">
+          Notes
+          <textarea id="taskNotes" rows="4" maxlength="800" placeholder="Add context, evidence required or next steps"></textarea>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button id="deleteTaskButton" class="button danger-outline hidden" type="button">Delete</button>
+        <div class="modal-actions-right">
+          <button id="cancelTaskButton" class="button secondary" type="button">Cancel</button>
+          <button class="button primary" type="submit">Save task</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="setupDialog" class="modal setup-modal">
+    <form id="setupForm" method="dialog">
+      <div class="setup-mark">AG</div>
+      <p class="eyebrow">WELCOME TO AFRICAGO</p>
+      <h2>Choose the project start date</h2>
+      <p>The 30-day launch tasks will be dated automatically from this starting point. You can change it later.</p>
+      <label>
+        Project start date
+        <input id="setupStartDate" type="date" required />
+      </label>
+      <button class="button primary full-button" type="submit">Create tracker</button>
+    </form>
+  </dialog>
+
+  <div id="offlineBanner" class="offline-banner hidden" role="status">You are offline. Changes are saved locally and will sync automatically when the connection returns.</div>
+
+  <div id="cloudGate" class="cloud-gate hidden" role="dialog" aria-modal="true" aria-labelledby="cloudGateTitle">
+    <div class="cloud-gate-card">
+      <div class="cloud-gate-brand"><div class="setup-mark">AG</div><div><p class="eyebrow">AFRICAGO CLOUD</p><h2 id="cloudGateTitle">Shared launch control</h2></div></div>
+      <p id="cloudGateMessage" class="cloud-gate-message">Secure cloud sync for the three co-founders.</p>
+
+      <section id="cloudConfigPanel" class="cloud-panel hidden">
+        <div class="cloud-illustration">☁</div>
+        <h3>Connect the app to Supabase</h3>
+        <p>Run the included SQL once, then place the project URL and publishable key in <code>config.js</code>. The setup wizard generates the file for you.</p>
+        <div class="cloud-actions">
+          <a class="button primary" href="setup.html">Open setup wizard</a>
+          <button id="configContinueOffline" class="button secondary" type="button">Continue in local mode</button>
+        </div>
+      </section>
+
+      <section id="authPanel" class="cloud-panel hidden">
+        <div class="auth-tabs" role="tablist">
+          <button id="showSignInButton" class="auth-tab active" type="button">Sign in</button>
+          <button id="showSignUpButton" class="auth-tab" type="button">Create account</button>
+        </div>
+        <form id="signInForm" class="auth-form">
+          <label>Email<input id="signInEmail" type="email" autocomplete="email" required></label>
+          <label>Password<input id="signInPassword" type="password" autocomplete="current-password" minlength="8" required></label>
+          <button class="button primary full-button" type="submit">Sign in</button>
+        </form>
+        <form id="signUpForm" class="auth-form hidden">
+          <label>Full name<input id="signUpName" type="text" autocomplete="name" required></label>
+          <label>Email<input id="signUpEmail" type="email" autocomplete="email" required></label>
+          <label>Password<input id="signUpPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+          <button class="button primary full-button" type="submit">Create founder account</button>
+        </form>
+        <button id="authContinueOffline" class="text-button" type="button">Use local mode on this device</button>
+      </section>
+
+      <section id="workspacePanel" class="cloud-panel hidden">
+        <h3>Create or join the AfricaGo workspace</h3>
+        <p>The first founder creates it. The other two join using the private code shown in Settings.</p>
+        <div class="workspace-choice-grid">
+          <form id="createWorkspaceForm" class="workspace-choice">
+            <span class="choice-icon">＋</span><h4>Create workspace</h4>
+            <label>Workspace name<input id="createWorkspaceName" type="text" value="AfricaGo" required></label>
+            <button class="button primary" type="submit">Create shared workspace</button>
+          </form>
+          <form id="joinWorkspaceForm" class="workspace-choice">
+            <span class="choice-icon">↗</span><h4>Join workspace</h4>
+            <label>Private join code<input id="joinWorkspaceCode" type="text" maxlength="12" placeholder="e.g. A7F3D9C2" required></label>
+            <button class="button secondary" type="submit">Join AfricaGo</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="cloudLoadingPanel" class="cloud-panel cloud-loading-panel">
+        <div class="cloud-spinner" aria-hidden="true"></div>
+        <h3>Connecting securely…</h3>
+        <p id="cloudLoadingText">Checking your account and workspace.</p>
+      </section>
+    </div>
+  </div>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <template id="taskTemplate">
+    <article class="task-card">
+      <button class="complete-toggle" type="button" aria-label="Mark task complete"></button>
+      <div class="task-main">
+        <div class="task-title-row">
+          <div>
+            <div class="task-badges"></div>
+            <h4 class="task-title"></h4>
+          </div>
+          <button class="task-menu-button" type="button" aria-label="Edit task">•••</button>
+        </div>
+        <p class="task-notes"></p>
+        <div class="task-meta">
+          <span class="task-owner"></span>
+          <span class="task-date"></span>
+          <span class="task-category"></span>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <script src="config.js"></script>
+  <script src="cloud.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
