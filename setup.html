@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AfricaGo Cloud Setup</title>
+  <link rel="stylesheet" href="app.css">
+  <style>
+    body{padding:30px}.setup-page{width:min(850px,100%);margin:auto}.setup-card{padding:clamp(22px,5vw,45px);border:1px solid var(--line);border-radius:28px;background:var(--surface-solid);box-shadow:var(--shadow-md)}
+    .setup-card h1{margin:6px 0 10px;font:850 clamp(30px,6vw,50px)/1 var(--font-display);letter-spacing:-.055em}.setup-card>p{color:var(--ink-600)}
+    .steps{display:grid;gap:14px;margin:28px 0}.step{display:grid;grid-template-columns:42px 1fr;gap:13px;padding:16px;border-radius:17px;background:var(--surface-muted)}.step-num{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;color:var(--forest-900);background:var(--sand-300);font-weight:900}.step h3{margin:2px 0 5px}.step p{margin:0;color:var(--ink-600);font-size:13px;line-height:1.55}
+    .config-form{display:grid;gap:15px;padding:21px;border:1px solid var(--line);border-radius:19px}.config-form label{display:grid;gap:7px;font-weight:800;font-size:12px}.config-form input{min-height:49px;padding:0 14px;border:1px solid var(--line);border-radius:13px;background:var(--surface-muted);color:var(--ink-950)}
+    .setup-actions{display:flex;gap:10px;flex-wrap:wrap}.setup-actions a{text-decoration:none}.notice{padding:13px 15px;border-radius:14px;color:var(--warning);background:var(--warning-bg);font-size:12px;line-height:1.5}.back-link{display:inline-block;margin-bottom:20px;color:var(--forest-700);font-weight:800}
+  </style>
+</head>
+<body>
+  <main class="setup-page">
+    <a class="back-link" href="index.html">← Back to Launch Control</a>
+    <section class="setup-card">
+      <p class="eyebrow">AFRICAGO CLOUD</p>
+      <h1>One-time setup</h1>
+      <p>This connects the tracker to a private Supabase database. No service-role or secret database key belongs in the browser app.</p>
+      <div class="steps">
+        <div class="step"><span class="step-num">1</span><div><h3>Create a Supabase project</h3><p>Use one company-controlled account. Keep at least two founders able to recover the account.</p></div></div>
+        <div class="step"><span class="step-num">2</span><div><h3>Run the database SQL</h3><p>Open Supabase SQL Editor and run <code>supabase/setup.sql</code> from this package. It creates the workspace, task, member, activity and security policies.</p></div></div>
+        <div class="step"><span class="step-num">3</span><div><h3>Generate the browser configuration</h3><p>Copy the Project URL and the publishable key from Supabase Project Settings → API. Paste them below.</p></div></div>
+      </div>
+      <form id="configForm" class="config-form">
+        <label>Supabase project URL<input id="projectUrl" type="url" placeholder="https://your-project.supabase.co" required></label>
+        <label>Supabase publishable key<input id="publishableKey" type="text" placeholder="sb_publishable_… or legacy anon key" required></label>
+        <div class="notice">Never paste the secret key or service-role key here. The publishable browser key is protected by the Row Level Security policies created by the SQL file.</div>
+        <div class="setup-actions">
+          <button class="button primary" type="submit">Download configured config.js</button>
+          <a class="button secondary" href="supabase/setup.sql" download>Download setup SQL</a>
+        </div>
+      </form>
+      <p class="field-help">Replace the existing <code>config.js</code> in the app folder with the downloaded file, then upload the complete folder to any HTTPS static host. This configuration remains part of the deployed app even when a cleanup utility clears browser data.</p>
+    </section>
+  </main>
+  <script>
+    document.getElementById('configForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const url = document.getElementById('projectUrl').value.trim().replace(/\/$/, '');
+      const key = document.getElementById('publishableKey').value.trim();
+      if (!/^https:\/\//.test(url) || !key) return;
+      const content = `// AfricaGo Cloud browser configuration.\n// Never place a secret/service-role key in this file.\nwindow.AFRICAGO_CONFIG = {\n  supabaseUrl: ${JSON.stringify(url)},\n  supabasePublishableKey: ${JSON.stringify(key)}\n};\n`;
+      const blob = new Blob([content], {type:'text/javascript'});
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'config.js';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    });
+  </script>
+</body>
+</html>

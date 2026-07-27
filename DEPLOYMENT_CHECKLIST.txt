@@ -1,0 +1,17 @@
+AFRICAGO LAUNCH CONTROL CLOUD — ACTIVATION CHECKLIST
+
+[ ] Create a company-controlled Supabase project
+[ ] Run supabase/setup.sql in the SQL Editor
+[ ] Enable email/password authentication
+[ ] Set the final Site URL and redirect URL in Supabase Auth settings
+[ ] Open setup.html and generate config.js using the project URL and publishable key
+[ ] Replace the placeholder config.js
+[ ] Upload the complete folder to an HTTPS static host
+[ ] First founder creates account and workspace
+[ ] Import or automatically migrate the existing local tasks
+[ ] Copy the private join code
+[ ] Second and third founders create individual accounts and join
+[ ] Test a task update on two devices
+[ ] Test offline edit, reconnect and automatic sync
+[ ] Install the PWA on each phone/computer if desired
+[ ] Optionally deploy email reminders
